@@ -30,5 +30,7 @@ looker.plugins.visualizations.add({
         }
 
         campaignsElement.innerHTML = html;
+
+        done();
     }
 })
