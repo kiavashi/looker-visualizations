@@ -1,7 +1,5 @@
 'use strict';
 
-console.log('enter campaigns');
-
 looker.plugins.visualizations.add({
     create: function(element, config) {
         element.innerHTML = `
@@ -21,9 +19,8 @@ looker.plugins.visualizations.add({
         `;
     },
     updateAsync: function(data, element, config, queryResponse, details, done) {
-        console.log('campaigns update');
-        let campaignsElement = element.firstElementChild;
-        let html = '';
+        let campaignsElement = element.querySelector('.campaigns-table');
+        let html = `${JSON.stringify(queryResponse)}`;
         for (let campaign of data) {
             html += `
             <div class="campaign-cell">
