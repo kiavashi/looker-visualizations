@@ -155,7 +155,10 @@ looker.plugins.visualizations.add({
         }
 
         for (let campaign of Array.from(campaignsElement.querySelectorAll('.campaign'))) {
-            campaign.removeEventListener('click');
+            let listener = getEventListeners(campaign).click[0];
+            if (listener) {
+                campaign.removeEventListener('click', listener);
+            }
             campaignsElement.removeChild(campaign);
         }
         elements.map(el => campaignsElement.appendChild(el));
