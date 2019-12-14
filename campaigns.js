@@ -148,16 +148,18 @@ looker.plugins.visualizations.add({
                     </div>
                 </div>
             `;
-            campaignElement.addEventListener('click', function () {
+            let clickListener = function () {
                 window.parent.parent.postMessage(JSON.stringify({type: 'campaign:click', id: campaign.id, name: campaign.name}), 'https://localhost:4443');
-            });
+            };
+            campaignElement.addEventListener('click', clickListener);
+            campaignElement.clickListener = clickListener;
             elements.push(campaignElement);
         }
 
         for (let campaign of Array.from(campaignsElement.querySelectorAll('.campaign'))) {
-            let listener = getEventListeners(campaign).click[0];
-            if (listener) {
-                campaign.removeEventListener('click', listener);
+            console.log('removing listener');
+            if (campaign.clickListener) {
+                campaign.removeEventListener('click', campaign.clickListener);
             }
             campaignsElement.removeChild(campaign);
         }
