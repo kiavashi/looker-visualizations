@@ -6,7 +6,7 @@ looker.plugins.visualizations.add({
             <style>
             .campaigns-table {
                 background: #ffffff;
-                font-family: Avenir Next;
+                font-family: "Avenir Next","Open Sans",Helvetica,Arial,sans-serif;
             }
             .campaign {
                 display: block;
@@ -124,7 +124,7 @@ looker.plugins.visualizations.add({
 
         for (let campaign of campaigns) {
             let points = this.pointsFromActivity(campaign.activity, campaign.sent);
-            let backgroundSVG = `<svg class="campaign-background" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg"><polygon x="0%" y="0%" width="100" height="100" style="fill:#e4e4e4;" points="${points.map(p => p.join(',')).join(' ')}"/></svg>`
+            let backgroundSVG = `<svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg"><polygon x="0%" y="0%" width="100" height="100" style="fill:#e4e4e4;" points="${points.map(p => p.join(',')).join(' ')}"/></svg>`
             let date = campaign.duedate;
             let campaignElement = document.createElement('div');
             campaignElement.setAttribute('class', 'campaign');

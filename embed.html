@@ -1,0 +1,108 @@
+<style type="text/css">
+body {
+    margin: 0;
+}
+#content {
+    width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+}
+#campaigns {
+    flex: 0;
+    display: flex;
+    flex-direction: column;
+}
+.title {
+    font-size: 18px;
+    color: #434343;
+    padding: 20px 0 0 20px;
+    flex-grow: 0;
+    background: #ffffff;
+    z-index: 1;
+}
+iframe {
+    margin-top: -60px;
+    flex-grow: 1;
+}
+
+#click-detail {
+    padding: 30px;
+    margin: 0;
+    font-size: 18px;
+    min-height: 400px;
+    background: #ffffff;
+    z-index: 1;
+}
+
+#consortia {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+</style>
+<script type="application/javascript">
+const searchParams = new URLSearchParams(window.location.search);
+const navigateOnClick = searchParams.has('navigate');
+
+window.addEventListener("message", function(event) {
+    const lookerWindows = Array.from(document.getElementsByClassName('looker-embed'))
+        .map(element => element.contentWindow);
+
+    if (lookerWindows.includes(event.source)) {
+        if (event.origin === "https://paradata.looker.com") {
+            console.log('looker', JSON.parse(event.data));
+        } else {
+            console.log('not looker', event.origin, JSON.parse(event.data));
+        }
+    } else if (lookerWindows.includes(event.source.parent)) {
+        console.log('visualization', event.origin, JSON.parse(event.data));
+        visualizationEvent(JSON.parse(event.data));
+    } else {
+        console.log('other', event.origin, event.data);
+    }
+});
+
+function visualizationEvent(event) {
+    const {type, ...info} = event;
+
+    if (type === 'campaign:click') {
+        const {id, name} = info;
+        if (navigateOnClick) {
+            window.open(`/campaign.html?id=${id}&name=${encodeURIComponent(name)}`, '_blank');
+        } else {
+            document.querySelector('#click-detail').innerHTML = `[${id}] ${name}`;
+        }
+    } else if (type === 'consortia:click') {
+        const {id, name, members, total} = info;
+        if (navigateOnClick) {
+            window.open(`/consortia.html?id=${id}&name=${encodeURIComponent(name)}&members=${members}&total=${total}`, '_blank');
+        } else {
+            document.querySelector('#click-detail').innerHTML = `[${id}] ${name} (${members}/${total})`;
+        }
+    }
+}
+</script>
+
+<div id="content">
+    <div style="display:flex;flex-direction:column;flex-grow: 1">
+        <pre id="click-detail"></pre>
+        <div id="consortia">
+            <div class="title">Consortia</div>
+            <iframe
+              class="looker-embed"
+              src="https://paradata.looker.com/embed/looks/4?embed_domain=https://localhost:4443&permissions=%5B%22access_data%22%2C%22see_user_dashboards%22%2C%22see_looks%22%5D"
+              frameborder="0">
+            </iframe>
+        </div>
+    </div>
+    <div id="campaigns">
+        <div class="title">Active Campaigns</div>
+        <iframe
+          class="looker-embed"
+          src="https://paradata.looker.com/embed/looks/3?embed_domain=https://localhost:4443"
+          frameborder="0">
+        </iframe>
+    </div>
+</div>
